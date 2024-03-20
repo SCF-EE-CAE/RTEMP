@@ -1,4 +1,4 @@
-# RTENV - Versão: v1
+# RTEMP - Versão: v1
 
 Código do módulo de temperatura do projeto.
 
