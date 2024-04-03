@@ -91,14 +91,25 @@ void MQTT_connect() {
 }
 
 bool readTempSensor(float& temperature) {
-  sensor.requestTemperatures();
+  for (int i = 0; i < 3; ++i) {
+    sensor.requestTemperatures();
   
-  if (!sensor.getAddress(temp_addr,0)) { // Find sensor address
-    return false;
+    if (sensor.getAddress(temp_addr, 0)) { // Find sensor address
+      temperature = sensor.getTempC(temp_addr);
+      
+      if (temperature != -127) { // Check for valid temperature reading
+        Log.noticeln("Temperature reading successful.");
+        return true;
+      }
+    }
+    Log.errorln("Error: Failed to get valid temperature reading.");
+    
+    delay(2000); // Delay for 2 seconds before next attempt
   }
+  
+  Log.errorln("Error: Failed after three attempts.");
+  return false; // Failed after three attempts or invalid temperature reading
 
-  temperature = sensor.getTempC(temp_addr);
-  return true;
 }
 
 bool testTempSensor() {
